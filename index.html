@@ -1,1 +1,172 @@
-a
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+
+    <!--jQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!--Bootstrap-->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+
+    <!--Bootstrap-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+        integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+        integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous">
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-5">
+
+                <div class="container">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-header">
+                            Articulos
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <form action="" method="POST">
+                                    <label for="id">Id</label>
+                                    <input type="text" class="form-control" name="txtid" id="txtid">
+                                    <label for="Nombre">Nombre</label>
+                                    <input type="text" class="form-control" name="txtnombre" id="txtnombre">
+                                    <label for="Descripción">Descripción</label>
+                                    <input type="text" class="form-control" name="txtdescripcion" id="txtdescripcion">
+                                    <label for="Precio">Precio</label>
+                                    <input type="number" class="form-control" name="txtprecio" id="txtprecio">
+                                    <br>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button id="btnAgregar" type="button" class="btn btn-success">Agregar</button>
+                                        <button id="btnEditar" type="button" class="btn btn-warning">Editar</button>
+                                        <button id="btnCancelar" type="button" class="btn btn-primary">Cancelar</button>
+                                    </div>
+                                </form>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-7">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Descripción</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="registros">
+                            <tr>
+                                <td>Id</td>
+                                <td>Nombre</td>
+                                <td>Descripción</td>
+                                <td>Precio</td>
+                                <td>Seleccionar|Borrar</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  <div id="mensaje"></div> -->
+    <script>
+        //Cuando un documento ya esta listo haga esta funcion
+        $(document).ready(function () {
+            $('#mensaje').html("Hola desde jquery");
+
+        });
+        //Cuando el usuario le de click haga la siguiente funcion
+        $('#btnAgregar').click(function (e) {
+            //alert('Mensajitos');
+            //Llama la funcion de insertar
+            insert();
+        });
+
+        //Funcion para insertar los datos
+        function insert() {
+            //Conjuntos de datos que su origen son del formulario
+            var datos = new FormData();
+            //Recolecta todos los valores, de las cajas de texto 
+            datos.append('nombre', $('#txtnombre').val());
+            datos.append('descripcion', $('#txtdescripcion').val());
+            datos.append('precio', $('#txtprecio').val());
+
+            //Imprime los datos desde consola
+            console.log(datos.get('nombre'));
+            console.log(datos.get('descripcion'));
+            console.log(datos.get('precio'));
+
+            $.ajax({
+                type: "post",
+                url: "index.php?accion=insertar",
+                data: datos,
+                processData: false,
+                contentType: false,
+                success: function (respuesta) {
+                    console.log(respuesta);
+                    //Cuando se registren los datos, haga una consulta
+                    consultardatos();
+                }
+            });
+        }
+
+        function consultardatos() {
+            $("#registros").empty();
+
+            $.getJSON("index.php", function (registros) {
+
+                var productos = [];
+                $.each(registros, function (llave, valor) {
+
+                    if (llave > 0) {
+                        var template = "<tr>";
+                        template += "<td> " + valor.id + "</td>";
+                        template += "<td> " + valor.nombre + "</td>";
+                        template += "<td> " + valor.descripcion + "</td>";
+                        template += "<td> " + valor.precio + "</td>";
+                        template += "<td> Seleccionar";
+                        template += '<input class="btn btn-danger" type="button" onclick="borrar(' + valor.id + ')" value="Borrar"> </td>';
+                        template += "</tr>";
+
+                        productos.push(template);
+                    }
+                });
+                $('#registros').append(productos.join(""));
+                console.log(registros);
+            });
+        }
+
+        //Hace una consulta general
+        consultardatos();
+
+        //Funcion para eliminar datos
+        function borrar(id) {
+            $.get("index.php?borrar=" + id, function () {
+                console.log();
+                consultardatos();
+            });
+        }
+    </script>
+
+</body>
+
+</html>
