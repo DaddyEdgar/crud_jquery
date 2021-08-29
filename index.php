@@ -27,12 +27,11 @@ if (isset($_GET['accion']) == "insertar") {
 
 //borrar datos, pero se debe enviar una clave (para el borrado)
 
-if (isset($_GET["borrar"])) {
+if(isset($_GET["borrar"])){
 
-    $id = $_GET["borrar"];
-
-    $sentenciaSQL = $conexion->prepare("DELETE FROM productos WHERE id=:id");
-    $sentenciaSQL->bindParam('id:', $id);
+    $id=$_GET["borrar"];
+    $sentenciaSQL=$conexion->prepare("DELETE FROM productos WHERE id=:id");
+    $sentenciaSQL->bindParam('id:',$id);
     $sentenciaSQL->execute();
     exit();
 }

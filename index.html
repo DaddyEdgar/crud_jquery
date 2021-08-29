@@ -31,7 +31,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-5">
+            <div class="col-lg-6 col-sm-12">
 
                 <div class="container">
                     <div class="card" style="width: 18rem;">
@@ -61,7 +61,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-7">
+            <div class="col-lg-6 col-sm-12">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered">
                         <thead>
@@ -144,7 +144,7 @@
                         template += "<td> " + valor.descripcion + "</td>";
                         template += "<td> " + valor.precio + "</td>";
                         template += "<td> Seleccionar";
-                        template += '<input class="btn btn-danger" type="button" onclick="borrar(' + valor.id + ')" value="Borrar"> </td>';
+                        template += '<input class="btn btn-danger" type="button" onclick="borrar('+valor.id+')" value="Borrar"> </td>';
                         template += "</tr>";
 
                         productos.push(template);
@@ -158,13 +158,12 @@
         //Hace una consulta general
         consultardatos();
 
-        //Funcion para eliminar datos
         function borrar(id) {
-            $.get("index.php?borrar=" + id, function () {
-                console.log();
+            $.get("index.php?borrar="+id, function () {
                 consultardatos();
             });
         }
+        console.log(borrar() );
     </script>
 
 </body>
